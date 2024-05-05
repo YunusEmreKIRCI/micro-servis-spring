@@ -1,0 +1,17 @@
+#First Layer
+#oraclelinux
+#openjdk
+#maven images pulled from docker hub
+FROM maven:3.8.3-openjdk-17 as build
+#Kodları dockere kopyalama
+WORKDIR /app
+COPY . /app/
+#build komutu
+RUN mvn clean package -DskipTests
+# Çalıştırma ortamı
+FROM openjdk:17-jdk
+COPY --from=build /app/target/discoveryserver-0.0.1-SNAPSHOT.jar /app/discoveryserver.jar
+#8082 portunu açma
+#EXPOSE 8082
+#değişken olduğu için expose doğru değil
+CMD java -jar /app/discoveryserver.jar
